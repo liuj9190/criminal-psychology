@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>《圖解 犯罪心理學》互動測驗</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f4f4f4;
+}
+
+/* 背景容器固定 */
+#background-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.background-image {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+}
+
+#background-image {
+    max-width: 100%;
+    max-height: 100%;
+    display: none;
+}
+
+#question-container, #product-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    z-index: 1;
+    width: 80%;
+    max-width: 600px;
+}
+
+#product-container {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 18px;
+}
+
+#product-image {
+    max-width: 100%;
+    max-height: 60vh;
+    margin: 0px 0;
+}
+
+.red-highlight {
+    color: #c0392b;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+button {
+    margin: 10px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+.click-hint {
+    margin-top: 10px;
+    font-size: 16px;
+    color: blue;
+}
+
+/* 新增按鈕列樣式 */
+.button-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+.button-row img {
+    width: 40px;
+}
+
+@media (max-width: 600px) {
+    #question-container, #product-container {
+        width: 95%;
+        padding: 15px;
+    }
+    button {
+        width: 100%;
+        padding: 14px;
+    }
+    #product-image {
+        max-height: 40vh;
+    }
+}
+</style>
+</head>
+<body>
+<div id="background-container">
+    <img id="background-image" class="background-image" src="images/default-background.jpg" style="display: none;">
+    <img class="background-image" src="images/background1.jpg" style="display: none;">
+    <img class="background-image" src="images/background2.jpg" style="display: none;">
+    <img class="background-image" src="images/background3.jpg" style="display: none;">
+</div>
+
+<div id="question-container">       
+    <h2 id="question"></h2>
+    <div id="options-top"></div>
+    <div id="options-middle"></div>
+    <div id="options-bottom"></div>
+</div>
+
+<div id="product-container">
+    <h2 id="product-title"></h2>
+    <p id="click-hint" class="click-hint">點擊圖片了解更多</p>
+    <a id="product-link" href="" target="_blank">
+        <img id="product-image" src="" alt="Product Image">
+    </a>
+    <p id="product-description"></p>
+    <div class="button-row" id="button-row"></div>
+</div>
+
+<script>
+const questions = [
+    {        
+        question: "你在便利商店看到有人偷拿商品。",
+        options: [
+            { text: "立即制止並通報店員", next: 1, score: 5 },
+            { text: "假裝沒看見", next: 1, score: 1 },
+            { text: "等他離開後再通報", next: 1, score: 3 }
+        ],
+        background: 'images/default-background.jpg'
+    },
+    {
+        question: "朋友傳給你一個「免費電影下載連結」，但需要安裝不明軟體",
+        options: [
+            { text: "抱著嘗試的心態直接下載", next: 2, score: 1 },
+            { text: "先查詢資訊再決定", next: 2, score: 3 },
+            { text: "直接拒絕並提醒他", next: 2, score: 5 }
+        ],
+        background: 'images/background1.jpg'
+    },
+    {
+        question: "你看到鄰居的孩子在公園跟一位陌生人有說有笑，對方還遞糖果給他",
+        options: [
+            { text: "立即上前詢問並帶孩子離開", next: 3, score: 5 },
+            { text: "遠處觀察並打電話給家長", next: 3, score: 3 },
+            { text: "覺得只是友善互動，不干涉", next: 3, score: 1 }
+        ],
+        background: 'images/background2.jpg'
+    },
+    {
+        question: "社群上有人私訊要你幫忙轉錢，並說自己手機壞掉、急需用錢",
+        options: [
+            { text: "要求對方提供更多證明", next: 4, score: 3 },
+            { text: "當場拒絕，並用其他方式聯繫本人確認", next: 4, score: 5 },
+            { text: "基於信任直接轉錢", next: 4, score: 1 }
+        ],
+        background: 'images/background3.jpg'
+    },
+    {
+        question: "在公車上看到有人偷摸他人的包包拉鍊。",
+        options: [            
+            { text: "悄悄拍照留作證據", next: -1, score: 3 },
+            { text: "不想惹麻煩而保持沉默", next: -1, score: 1 },
+            { text: "馬上提醒受害者並阻止", next: -1, score: 5 }
+        ],
+        background: 'images/background4.jpg'
+    }
+];
+
+let currentQuestion = 0;
+let totalScore = 0;
+
+function loadQuestion() {
+    let q = questions[currentQuestion];
+    if (currentQuestion === 0) {
+        document.getElementById('question').innerHTML =
+            `<span style="font-size: 1.0em; color: #c0392b;">
+                潛伏在日常的陷阱，你能全身而退嗎？<br>——犯罪心理情境挑戰
+            </span><br><br>${q.question}`;
+    } else {
+        document.getElementById('question').innerHTML = q.question;
+    }
+    changeBackground(q.background);
+
+    ['options-top', 'options-middle', 'options-bottom'].forEach(id => {
+        document.getElementById(id).innerHTML = '';
+    });
+
+    q.options.forEach((opt, i) => {
+        let btn = document.createElement('button');
+        btn.innerText = opt.text;
+        btn.onclick = () => chooseOption(opt.next, opt.score);
+        if (i % 3 === 0) document.getElementById('options-top').appendChild(btn);
+        else if (i % 3 === 1) document.getElementById('options-middle').appendChild(btn);
+        else document.getElementById('options-bottom').appendChild(btn);
+    });
+}
+
+function chooseOption(next, score) {
+    totalScore += score;
+    if (next === -1) showResult();
+    else {
+        currentQuestion = next;
+        loadQuestion();
+    }
+}
+
+function showResult() {
+    document.getElementById('background-image').style.display = 'none';
+    document.body.style.backgroundColor = '#f4f4f4'; // 保留底色
+    document.getElementById('question-container').style.display = 'none';
+    document.getElementById('product-container').style.display = 'flex';
+
+    let resultTitle = "<span style='font-size: 0.8em; color: #c0392b; line-height: 1.8em;'>你的犯罪心理傾向分析：</span><br>";
+    let resultText = "";
+
+    if (totalScore <= 9) {
+        resultText = "<strong style='font-size: 1.2em; color: #1E40AF; line-height: 1.8em;'>你的風險感知不足</strong><br><span style='font-size: 0.8em; line-height: 1.8em;'>對可疑行為不敏感，缺乏防範行動。可能因怕麻煩或好奇而忽略潛在危險。</span>";
+    } else if (totalScore <= 14) {
+        resultText = "<strong style='font-size: 1.2em; color: #1E40AF; line-height: 1.8em;'>你的好心易受影響</strong><br><span style='font-size: 0.8em; line-height: 1.8em;'>容易因好奇、方便或信任感而降低警戒</span>";
+    } else if (totalScore <= 19) {
+        resultText = "<strong style='font-size: 1.2em; color: #1E40AF; line-height: 1.8em;'>你會因情境冷靜判斷</strong><br><span style='font-size: 0.8em; line-height: 1.8em;'>大部分情況冷靜，但在熟人壓力或意外情況下會猶豫</span>";
+    } else {
+        resultText = "<strong style='font-size: 1.2em; color: #1E40AF; line-height: 1.8em;'>你的防範雷達全開</strong><br><span style='font-size: 0.8em; line-height: 1.8em;'>情境敏感度高，能快速判斷並行動。但也要注意安全，不要單打獨鬥。</span>";
+    }
+
+    document.getElementById('product-title').innerHTML = `<span class="red-highlight">${resultTitle}</span>${resultText}`;
+    let productImage = document.getElementById('product-image');
+    productImage.src = `images/products/result.jpg`;
+    productImage.alt = "圖解 犯罪心理學";
+    document.getElementById('product-link').href = "https://www.morningstar.com.tw/bookinfo.aspx?bookno=0145234";
+    document.getElementById('click-hint').style.display = 'block';
+
+    // 建立按鈕列
+    let buttonRow = document.getElementById('button-row');
+    buttonRow.innerHTML = "";
+
+    // 外層 table（兩行：第一行放賣場圖，第二行放重新開始按鈕）
+    let outerTable = document.createElement('table');
+    outerTable.setAttribute('cellspacing', '0');
+    outerTable.setAttribute('cellpadding', '0');
+    outerTable.setAttribute('border', '0');
+    outerTable.setAttribute('align', 'center');
+    outerTable.style.width = '100%';
+
+    // 第一行：賣場圖
+    let storeRow = document.createElement('tr');
+    let storeCell = document.createElement('td');
+    storeCell.setAttribute('align', 'center');
+
+    let storeTable = document.createElement('table');
+    storeTable.setAttribute('cellspacing', '0');
+    storeTable.setAttribute('cellpadding', '0');
+    storeTable.setAttribute('border', '0');
+    storeTable.setAttribute('align', 'center');
+    storeTable.style.width = '80%'; // 版面 80%
+    storeTable.style.marginBottom = '15px';
+
+    let storeIconsRow = document.createElement('tr');
+    let stores = [
+        { href: "https://www.books.com.tw/products/0011028959?sloc=main", src: "images/22.jpg", alt: "博客來" },
+        { href: "https://www.eslite.com/product/10012168942682963593003", src: "images/23.jpg", alt: "誠品" },
+        { href: "https://sho.pe/7zustl", src: "images/24.jpg", alt: "蝦皮" },
+        { href: "https://www.morningstar.com.tw/bookinfo.aspx?bookno=0145234", src: "images/25.jpg", alt: "晨星網路書店" }
+    ];
+    stores.forEach(store => {
+        let td = document.createElement('td');
+        td.style.padding = '5px';
+        td.style.width = '25%'; // 等分四格
+        let link = document.createElement('a');
+        link.href = store.href;
+        link.target = "_blank";
+        let img = document.createElement('img');
+        img.src = store.src;
+        img.alt = store.alt;
+        img.style.display = 'block';
+        img.style.width = '100%'; // 填滿格子
+        img.style.height = 'auto';
+        img.style.border = '1px solid #e74c3c';
+        img.style.borderRadius = '4px';
+        link.appendChild(img);
+        td.appendChild(link);
+        storeIconsRow.appendChild(td);
+    });
+    storeTable.appendChild(storeIconsRow);
+    storeCell.appendChild(storeTable);
+    storeRow.appendChild(storeCell);
+    outerTable.appendChild(storeRow);
+
+    // 第二行：重新開始按鈕
+    let restartRow = document.createElement('tr');
+    let restartCell = document.createElement('td');
+    restartCell.setAttribute('align', 'center');
+
+    let restartBtn = document.createElement('button');
+    restartBtn.textContent = "重新開始";
+    restartBtn.onclick = restart;
+
+    restartCell.appendChild(restartBtn);
+    restartRow.appendChild(restartCell);
+    outerTable.appendChild(restartRow);
+
+    // 把整個 outerTable 加到 buttonRow
+    buttonRow.appendChild(outerTable);
+}
+
+function changeBackground(path) {
+    let bg = document.getElementById('background-image');
+    if (path && bg) {
+        bg.src = path;
+        bg.style.display = 'block';
+    } else {
+        bg.style.display = 'none';
+    }
+}
+
+function restart() {
+    currentQuestion = 0;
+    totalScore = 0;
+    document.getElementById('product-container').style.display = 'none';
+    document.getElementById('question-container').style.display = 'block';
+    loadQuestion();
+}
+
+loadQuestion();
+</script>
+</body>
+</html>
