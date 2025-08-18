@@ -203,7 +203,7 @@ function loadQuestion() {
     if (currentQuestion === 0) {
         document.getElementById('question').innerHTML =
             `<span style="font-size: 1.0em; color: #c0392b;">
-                潛伏在日常的陷阱，你能全身而退嗎？<br>——犯罪心理情境挑戰
+                潛伏在日常的陷阱，你能全身而退嗎？<br>——防範犯罪情境挑戰
             </span><br><br>${q.question}`;
     } else {
         document.getElementById('question').innerHTML = q.question;
@@ -239,17 +239,17 @@ function showResult() {
     document.getElementById('question-container').style.display = 'none';
     document.getElementById('product-container').style.display = 'flex';
 
-    let resultTitle = "<span style='font-size: 0.8em; color: #c0392b; line-height: 1.8em;'>你的犯罪心理傾向分析：</span><br>";
+    let resultTitle = "<span style='font-size: 0.8em; color: #c0392b; line-height: 1.8em;'>防範犯罪心理分析：</span><br>";
     let resultText = "";
 
     if (totalScore <= 9) {
-        resultText = "<strong style='font-size: 1.2em; color: #1E40AF; line-height: 1.8em;'>你的風險感知不足</strong><br><span style='font-size: 0.8em; line-height: 1.8em;'>對可疑行為不敏感，缺乏防範行動。可能因怕麻煩或好奇而忽略潛在危險。</span>";
+        resultText = "<strong style='font-size: 1.2em; color: #1E40AF; line-height: 1.8em;'>你的風險感知不足</strong><br><span style='font-size: 0.8em; line-height: 1.8em;'>你對可疑行為的敏感度較低，可能因怕麻煩或過於信任而忽略潛在危險。多一點防範意識，能幫助你更安全。</span>";
     } else if (totalScore <= 14) {
-        resultText = "<strong style='font-size: 1.2em; color: #1E40AF; line-height: 1.8em;'>你的好心易受影響</strong><br><span style='font-size: 0.8em; line-height: 1.8em;'>容易因好奇、方便或信任感而降低警戒</span>";
+        resultText = "<strong style='font-size: 1.2em; color: #1E40AF; line-height: 1.8em;'>你的好心易受影響</strong><br><span style='font-size: 0.8em; line-height: 1.8em;'>你樂於信任他人，但有時過於相信表面情況，容易降低警覺。適度查證資訊，就能避免陷入陷阱。</span>";
     } else if (totalScore <= 19) {
-        resultText = "<strong style='font-size: 1.2em; color: #1E40AF; line-height: 1.8em;'>你會因情境冷靜判斷</strong><br><span style='font-size: 0.8em; line-height: 1.8em;'>大部分情況冷靜，但在熟人壓力或意外情況下會猶豫</span>";
+        resultText = "<strong style='font-size: 1.2em; color: #1E40AF; line-height: 1.8em;'>你會因情境冷靜判斷</strong><br><span style='font-size: 0.8em; line-height: 1.8em;'>你多數情況能保持冷靜，並在收集資訊後做出判斷。但在熟人壓力或突發情境下，可能會猶豫。多一點直覺行動力，能讓你更安全。</span>";
     } else {
-        resultText = "<strong style='font-size: 1.2em; color: #1E40AF; line-height: 1.8em;'>你的防範雷達全開</strong><br><span style='font-size: 0.8em; line-height: 1.8em;'>情境敏感度高，能快速判斷並行動。但也要注意安全，不要單打獨鬥。</span>";
+        resultText = "<strong style='font-size: 1.2em; color: #1E40AF; line-height: 1.8em;'>你的防範雷達全開</strong><br><span style='font-size: 0.8em; line-height: 1.8em;'>你對犯罪情境非常敏感，能迅速察覺並採取行動，是身邊人的守護者。不過也要注意自身安全，避免單打獨鬥。</span>";
     }
 
     document.getElementById('product-title').innerHTML = `<span class="red-highlight">${resultTitle}</span>${resultText}`;
